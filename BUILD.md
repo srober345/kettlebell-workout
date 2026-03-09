@@ -1,4 +1,4 @@
-# Kettlebell Workout — Build Reference
+# RD's Workout — Build Reference
 
 **Created:** March 2026
 **Live URL:** https://rwdavidson303.github.io/kettlebell-workout/
@@ -9,12 +9,12 @@
 
 ## What This Is
 
-A science-based kettlebell workout program published as a static website. Richard's existing 12-exercise routine was optimized for exercise order, set structure, and MWF variation based on peer-reviewed research. The site serves as a phone-friendly workout reference with illustrated form guides.
+A multi-program training site with two science-based workout programs:
 
-### Goals
-- **Endurance** — Wednesday density training
-- **Conditioning** — high-rep structure across all days
-- **Toned body** — Friday heavier loads + Monday balanced volume
+1. **Kettlebell Program** (MWF) — 12 exercises optimized for order, set structure, and daily variation
+2. **Abdominal Routine** (Tue/Thu/Sat) — 8 exercises selected from EMG research across 3 rotating workouts
+
+The site is phone-friendly with illustrated form guides using inline SVG stick-figure illustrations.
 
 ---
 
@@ -22,14 +22,16 @@ A science-based kettlebell workout program published as a static website. Richar
 
 ```
 kettlebell-workout/
-├── index.html              # Home — program overview, exercise order, weekly overview
+├── index.html              # "RD's Workout" landing — program overview + weekly schedule
+├── kettlebell.html          # Kettlebell program overview — exercise order, weekly cards, quick ref
 ├── monday.html             # Monday "Standard Day" — balanced baseline workout
 ├── wednesday.html          # Wednesday "Density Day" — short rest, max metabolic burn
 ├── friday.html             # Friday "Power Day" — heavier bells, explosive intent
-├── exercises.html          # Exercise Library — 12 exercises with SVG illustrations + form cues
-├── progression.html        # 12-week progressive overload plan + superset option
+├── exercises.html          # KB Exercise Library — 12 exercises with SVG illustrations + form cues
+├── progression.html        # KB 12-week progressive overload plan + superset option
+├── abs.html                # Ab routine — 3 workouts, 8 exercises with SVG illustrations
 ├── css/
-│   └── style.css           # Full site styling (687 lines)
+│   └── style.css           # Full site styling (~840 lines)
 ├── js/
 │   └── main.js             # Mobile nav hamburger toggle (17 lines)
 ├── .github/
@@ -37,7 +39,7 @@ kettlebell-workout/
 │       └── deploy.yml      # GitHub Pages deployment workflow
 ├── .gitignore
 ├── BUILD.md                # This file
-└── kettlebell-workout-plan.md  # Source workout plan in markdown
+└── kettlebell-workout-plan.md  # Source KB workout plan in markdown
 ```
 
 Also stored in `~/Documents/`:
@@ -56,6 +58,38 @@ Also stored in `~/Documents/`:
 
 ---
 
+## Navigation Architecture
+
+### Main Nav (all pages): 3 tabs
+```
+Home | Kettlebell | Abs
+```
+- Fixed at top, navy background, 60px height
+- Logo: "RD's Workout" (orange accent on "Workout")
+- Mobile: hamburger toggle
+
+### Kettlebell Sub-Nav (KB pages only): 6 links
+```
+Overview | Monday | Wednesday | Friday | Exercises | Progression
+```
+- Fixed below main nav, light gray background, 40px height
+- Pages with subnav use `<body class="has-subnav">` for 100px top padding
+- Active link gets navy background pill
+
+### Which pages get which nav:
+| Page | Main Nav Active | Subnav? | Subnav Active |
+|------|----------------|---------|---------------|
+| index.html | Home | No | — |
+| kettlebell.html | Kettlebell | Yes | Overview |
+| monday.html | Kettlebell | Yes | Monday |
+| wednesday.html | Kettlebell | Yes | Wednesday |
+| friday.html | Kettlebell | Yes | Friday |
+| exercises.html | Kettlebell | Yes | Exercises |
+| progression.html | Kettlebell | Yes | Progression |
+| abs.html | Abs | No | — |
+
+---
+
 ## Design System
 
 ### Colors (CSS Custom Properties in `:root`)
@@ -67,30 +101,54 @@ Also stored in `~/Documents/`:
 | `--orange-hover` | `#d4551f` | Button hover |
 | `--bg` | `#f8f9fa` | Page background |
 | `--white` | `#ffffff` | Cards |
-| `--gray-50` | `#f0f2f5` | Alt section backgrounds |
+| `--gray-50` | `#f0f2f5` | Alt section backgrounds, subnav |
 | `--gray-600` | `#6b7280` | Body text, secondary |
 | `--gray-800` | `#333333` | Primary text |
 
-### Typography
-- Font: Inter
-- Weights: 400 (body), 500 (nav links), 600 (buttons, labels), 700 (headings), 800 (hero titles)
+### Program Colors
+| Program | Hero Gradient | Card Border |
+|---------|--------------|-------------|
+| Kettlebell | `#1a3c6e → #2a5298` (navy) | `var(--navy)` |
+| Abs | `#0e7490 → #0891b2` (teal) | `#0891b2` |
 
-### Layout
-- Max-width: 1200px container
-- Fixed top nav (60px height)
-- Responsive breakpoints: 768px (tablet), 480px (phone)
-- Mobile: hamburger nav, single-column cards
-
-### Day Color Scheme
+### Day Color Scheme (KB)
 - **Monday:** Navy gradient (`#1a3c6e → #2a5298`)
 - **Wednesday:** Orange gradient (`#b45309 → #e8632b`)
 - **Friday:** Green gradient (`#065f46 → #059669`)
 
+### Typography
+- Font: Inter
+- Weights: 400 (body), 500 (nav/subnav), 600 (buttons, labels), 700 (headings), 800 (hero titles)
+
+### Layout
+- Max-width: 1200px container
+- Fixed main nav: 60px height
+- Fixed subnav (KB pages): 40px height, positioned at top: 60px
+- `main` padding-top: 60px (normal) or 100px (`.has-subnav`)
+- Responsive breakpoints: 768px (tablet), 480px (phone)
+- Mobile: hamburger nav, single-column cards, subnav scrolls horizontally
+
+### Phase Badges
+| Badge Class | Background | Text | Used For |
+|-------------|-----------|------|----------|
+| `.phase-power` | `#fef3c7` | `#92400e` | KB ballistic exercises |
+| `.phase-compound-pull` | `#dbeafe` | `#1e40af` | KB rows |
+| `.phase-compound-push` | `#ede9fe` | `#5b21b6` | KB presses |
+| `.phase-accessory` | `#d1fae5` | `#065f46` | KB accessory |
+| `.phase-isolation` | `#fce7f3` | `#9d174d` | KB triceps |
+| `.phase-core` | `#ffedd5` | `#9a3412` | KB side extensions |
+| `.phase-mobility` | `#e0e7ff` | `#3730a3` | KB halos |
+| `.phase-stability` | `#ccfbf1` | `#0f766e` | Ab dead bugs |
+| `.phase-flexion` | `#fef3c7` | `#92400e` | Ab crunches, leg raises |
+| `.phase-anti-rotation` | `#dbeafe` | `#1e40af` | Ab plank taps |
+| `.phase-rotation` | `#ede9fe` | `#5b21b6` | Ab side plank, Russian twist |
+| `.phase-isometric` | `#e0e7ff` | `#3730a3` | Ab hollow body hold |
+
 ---
 
-## The 12 Exercises (Optimized Order)
+## Kettlebell Program (MWF)
 
-The order follows exercise science principles:
+### The 12 Exercises (Optimized Order)
 
 | # | Exercise | Phase | Set Structure (Mon/Wed/Fri) |
 |---|----------|-------|-----------------------------|
@@ -120,36 +178,116 @@ The order follows exercise science principles:
 - **Wednesday Density:** Minimal rest 15-20 sec (HR stays 150+), 45-55 min
 - **Friday Power:** Heavier bells, longer rest 45-60 sec (HR to 130-135), 60-70 min
 
+### Equipment
+- Current: Light 10-15 lb, Medium 15-20 lb, Heavy 20-25 lb
+- Recommended next: 35 lb (16 kg) for swings, rows, farmer's carries
+- Future: 53 lb (24 kg) when 35 lb swings feel routine
+
+### KB Progression (12-Week Cycle)
+- **Weeks 1-4:** Adapt to new exercise order and set structures
+- **Weeks 5-8:** Increase density (shorten rest, beat session times)
+- **Weeks 9-12:** Increase load (heavier bells across all days)
+- **Every 5th week:** Deload (lighter bells, 75 reps/exercise, focus on form)
+
+### Superset Option (Advanced)
+After 4 weeks, pair exercises 4-9:
+- SS1: Rows + Push Outs
+- SS2: Chest Flys + Overhead Press
+- SS3: Curls+Press + Tricep Extensions
+
 ---
 
-## Exercise Library (exercises.html)
+## Abdominal Routine (Tue/Thu/Sat)
 
-Each exercise has:
-1. **SVG stick-figure illustration** — shows start/end positions with orange movement arrows
-2. **Form cues** — 6 bullet points each
-3. **Usage row** — sets/reps/bell for each day
-4. **Tutorial link** — button linking to external video/tutorial
+### Research Basis
+- **ACE/San Diego State EMG Study** (Peter Francis, 2001) — Bicycle crunch = 248% RA activation vs traditional crunch
+- **Escamilla et al. (Physical Therapy, 2006)** — Rollouts and leg raises highest-activation compound ab exercises
+- **McGill spine stability research** — Stability/anti-movement exercises must come first
+- **NASM/NSCA guidelines** — Order: stability → anti-extension/rotation → dynamic flexion/rotation
+- **RP Strength hypertrophy guidelines** — 10-16 working sets/week optimal; 3x/week frequency
 
-### SVG Illustration Pattern
-All 12 exercises use inline SVGs with consistent style:
-- `viewBox="0 0 280 220"` (or 340x220 for 3-phase exercises like Curls+Press)
-- Stick figures: `stroke="#1a3c6e"`, `stroke-width="2.5"`
+### The 8 Exercises
+
+| # | Exercise | Phase | Target | Equipment |
+|---|----------|-------|--------|-----------|
+| 1 | Dead Bug (KB in hands) | Stability | TvA, deep stabilizers | KB 10-15lb |
+| 2 | Reverse Crunch | Flexion | Lower rectus abdominis | Bodyweight |
+| 3 | Bicycle Crunch (slow, 3-sec) | Flexion | Upper RA + obliques | Bodyweight |
+| 4 | Plank Shoulder Taps | Anti-Rotation | Full RA, oblique co-contraction | Bodyweight |
+| 5 | Side Plank Hip Dips | Rotation | Obliques, TvA, QL | Bodyweight |
+| 6 | KB Russian Twist | Rotation | Rotational obliques | KB 10-15lb |
+| 7 | Hollow Body Hold (KB overhead) | Isometric | Full RA, anti-extension | KB 10-15lb |
+| 8 | Lying Leg Raises | Flexion | Lower RA, hip flexors | Bodyweight |
+
+### Exercise Order Principles
+1. **Stability first** — Deep stabilizer activation before any dynamic work (McGill)
+2. **Anti-rotation before rotation** — Fresh core needed for anti-movement control
+3. **Dynamic flexion last** — Highest fatigue exercises placed at end
+4. **Isometrics before dynamic in strength sessions** — Full-body tension before targeted work
+
+### 3-Day Rotation
+
+**Workout A — Tuesday: Stability + Flexion** (~18 min)
+| Exercise | Sets x Reps | Rest |
+|----------|-------------|------|
+| Dead Bug (KB) | 3 x 10/side | 45s |
+| Reverse Crunch | 3 x 15 | 45s |
+| Bicycle Crunch | 3 x 20 total | 45s |
+
+**Workout B — Thursday: Lateral + Rotation** (~18 min)
+| Exercise | Sets x Reps | Rest |
+|----------|-------------|------|
+| Plank Shoulder Taps | 3 x 10/side | 45s |
+| Side Plank Hip Dips | 3 x 12/side | 45s |
+| KB Russian Twist | 3 x 12/side | 45s |
+
+**Workout C — Saturday: Strength + Isometric** (~15 min)
+| Exercise | Sets x Reps | Rest |
+|----------|-------------|------|
+| Hollow Body Hold (KB) | 3 x 20-30 sec | 60s |
+| Lying Leg Raises | 3 x 12 | 60s |
+
+**Weekly volume:** 24 working sets across 3 sessions
+
+### Muscle Coverage
+| Region | Exercises |
+|--------|-----------|
+| Upper Rectus Abdominis | Bicycle Crunch, Hollow Body Hold |
+| Lower Rectus Abdominis | Reverse Crunch, Lying Leg Raises, Hollow Body Hold |
+| External Obliques | Side Plank Hip Dips, Bicycle Crunch, Russian Twist |
+| Internal Obliques | Side Plank Hip Dips, Reverse Crunch, Russian Twist |
+| Transverse Abdominis | Dead Bug, Hollow Body Hold, Side Plank, Plank Taps |
+| Anti-rotation | Plank Shoulder Taps, Dead Bug |
+
+### Ab Progression (6-Week Cycle)
+- **Weeks 1-2:** 2 sets per exercise, focus on form and controlled tempo
+- **Weeks 3-4:** 3 sets per exercise, begin adding reps
+- **Weeks 5-6:** 3 sets, add load (heavier KB for Dead Bug, Hollow Body, Russian Twist)
+- **Week 7:** Deload (2 sets, lighter), then swap 2-3 exercises for next cycle
+
+### Ab Exercise Anchor IDs (abs.html)
+```
+#dead-bug, #reverse-crunch, #bicycle-crunch, #plank-shoulder-taps,
+#side-plank-hip-dips, #russian-twist, #hollow-body-hold, #lying-leg-raises
+```
+
+---
+
+## SVG Illustration Pattern (Both Programs)
+
+All exercises use inline SVGs with consistent style:
+- `viewBox="0 0 280 220"` (or 340x220 for multi-phase exercises)
+- Stick figures: `stroke="#1a3c6e"`, `stroke-width="2.5"`, `stroke-linecap="round"`
 - Start position: `opacity="0.4"` (ghosted)
 - End position: full opacity
 - Kettlebell: `<rect>` with `fill="#e8632b"`, `rx="3"`
 - Movement arrow: dashed orange path (`stroke-dasharray="4"`) with arrowhead polygon
 - Labels: `font-size="11"`, `fill="#6b7280"` under each figure
-- Caption: `font-size="10"`, `fill="#b0b8c4"` at bottom
+- Caption: `font-size="10"`, `fill="#b0b8c4"` at bottom (y="210")
+- Floor line (ab exercises): `stroke="#b0b8c4"`, `stroke-width="1"`, `stroke-dasharray="3 2"`
+- Isometric holds: tension dashes instead of movement arrows
 
-### Exercise Anchor IDs
-Used for linking from workout day pages (`exercises.html#swings`, etc.):
-```
-#swings, #high-pulls, #golf-swings, #rows, #push-outs,
-#overhead-press, #chest-flys, #curls-press, #tricep-ext,
-#side-ext, #waist-halos, #head-halos
-```
-
-### Tutorial Links
+### KB Exercise Tutorial Links
 | Exercise | Source |
 |----------|--------|
 | Swings | youtube.com/watch?v=-Kf5mKayV3E (Cavemantraining) |
@@ -167,29 +305,9 @@ Used for linking from workout day pages (`exercises.html#swings`, etc.):
 
 ---
 
-## Progression Plan (progression.html)
-
-### 12-Week Cycle
-- **Weeks 1-4:** Adapt to new exercise order and set structures
-- **Weeks 5-8:** Increase density (shorten rest, beat session times)
-- **Weeks 9-12:** Increase load (heavier bells across all days)
-- **Every 5th week:** Deload (lighter bells, 75 reps/exercise, focus on form)
-
-### Superset Option (Advanced)
-After 4 weeks, pair exercises 4-9:
-- SS1: Rows + Push Outs
-- SS2: Chest Flys + Overhead Press
-- SS3: Curls+Press + Tricep Extensions
-
-### Equipment
-- Current: Light 10-15 lb, Medium 15-20 lb, Heavy 20-25 lb
-- Recommended next: 35 lb (16 kg) for swings, rows, farmer's carries
-- Future: 53 lb (24 kg) when 35 lb swings feel routine
-
----
-
 ## Research Sources
 
+### Kettlebell Program
 - McGill & Marshall (2012) — Swing EMG analysis, JSCR
 - ACE Kettlebell Study (2010) — Porcari & Schnettler
 - Farrar et al. (2010) — Oxygen cost of kettlebell swings
@@ -201,23 +319,55 @@ After 4 weeks, pair exercises 4-9:
 - Jay et al. (2011) — Kettlebell swing and low back pain, JSCR
 - PMC10910645 (2024) — Comprehensive kettlebell training review
 
+### Abdominal Routine
+- ACE/San Diego State EMG Study (Peter Francis, 2001) — Best and worst abdominal exercises
+- Escamilla et al. (Physical Therapy, 2006) — EMG analysis of traditional and nontraditional ab exercises
+- McGill & Marshall (2012) — Core stability and spine biomechanics
+- NASM Progressive Core Training model — Stability → strength → power sequence
+- RP Strength (2022) — Ab hypertrophy training volume landmarks
+- PMC7927075 (2021) — Repetition continuum re-examination
+
+---
+
+## Weekly Schedule
+
+| Day | Program | Focus | Duration |
+|-----|---------|-------|----------|
+| Monday | Kettlebell | Standard — balanced baseline | 55-65 min |
+| Tuesday | Abs (Workout A) | Stability + Flexion | ~18 min |
+| Wednesday | Kettlebell | Density — short rest, max burn | 45-55 min |
+| Thursday | Abs (Workout B) | Lateral + Rotation | ~18 min |
+| Friday | Kettlebell | Power — heavy bells, explosive | 60-70 min |
+| Saturday | Abs (Workout C) | Strength + Isometric | ~15 min |
+| Sunday | Rest | Recovery | — |
+
 ---
 
 ## Build History
 
 ### Session 1 — March 9, 2026
-1. Created optimized workout plan (markdown + Word doc) from Richard's 12-exercise routine
+1. Created optimized KB workout plan (markdown + Word doc) from Richard's 12-exercise routine
 2. Built 6-page static site with clean & modern design
 3. Set up GitHub repo (`rwdavidson303/kettlebell-workout`) and GitHub Pages deployment
-4. Added YouTube video embeds for exercises — discovered Error 153 (creators disabled embedding)
-5. Replaced broken iframes with clickable YouTube thumbnails + SVG illustrations for exercises without videos
-6. User liked SVG illustrations — replaced ALL YouTube thumbnails with consistent SVG stick-figure illustrations for all 12 exercises
+4. Added YouTube video embeds — discovered Error 153 (creators disabled embedding)
+5. Replaced broken iframes with clickable YouTube thumbnails + SVG illustrations
+6. User liked SVG illustrations — replaced ALL YouTube thumbnails with consistent SVG stick-figure illustrations for all 12 KB exercises
 7. Cleaned up unused YouTube CSS styles
-8. Site live at https://rwdavidson303.github.io/kettlebell-workout/
+
+### Session 2 — March 9, 2026
+8. Researched ab exercise science (ACE EMG study, Escamilla, McGill, NASM, RP Strength)
+9. Designed 8-exercise ab routine across 3 rotating workouts (Tue/Thu/Sat)
+10. Restructured site from single-program to multi-program "RD's Workout"
+11. Renamed `index.html` → `kettlebell.html`, created new landing page
+12. Built `abs.html` with 8 exercise cards, SVG illustrations, 3 workout tables, progression plan
+13. Simplified nav to 3 main tabs (Home | Kettlebell | Abs) with KB subnav for sub-pages
+14. Updated nav, logos, and footers across all 8 pages
 
 ### Key Decisions
-- **Pure HTML/CSS/JS** chosen over frameworks — simple static site doesn't need React/Vue
-- **SVG illustrations over YouTube embeds** — more reliable, consistent look, no third-party embedding issues
-- **GitHub Pages over Railway** — free hosting, no server needed for static content
-- **Multi-page over single-page** — cleaner navigation, each workout day has its own page
-- **HR-guided rest** — rest periods defined by heart rate targets rather than fixed timers
+- **Pure HTML/CSS/JS** — simple static site doesn't need React/Vue
+- **SVG illustrations over YouTube embeds** — more reliable, consistent look, no third-party issues
+- **GitHub Pages over Railway** — free hosting, no server needed
+- **3-tab main nav + subnav** — keeps top nav clean, KB sub-pages accessible via secondary bar
+- **HR-guided rest (KB)** — rest periods defined by heart rate targets rather than fixed timers
+- **3-day ab rotation** — each session targets different movement patterns for full coverage
+- **Teal color for abs** (`#0891b2`) — visually distinct from KB navy without clashing
