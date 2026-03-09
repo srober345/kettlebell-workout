@@ -103,6 +103,41 @@ a:hover { color: var(--orange); }
   transition: all var(--transition);
 }
 
+/* Sub-navigation (KB pages) */
+.subnav {
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-100);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+.subnav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  gap: 0.25rem;
+  height: 40px;
+  align-items: center;
+}
+
+.subnav a {
+  color: var(--gray-600);
+  padding: 0.35rem 0.75rem;
+  border-radius: 5px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all var(--transition);
+}
+
+.subnav a:hover { color: var(--navy); background: var(--gray-100); }
+.subnav a.active { color: var(--white); background: var(--navy); }
+
+.has-subnav main { padding-top: 100px; }
+
 /* ============================================
    Layout
    ============================================ */
@@ -775,6 +810,10 @@ footer strong { color: var(--orange); }
     box-shadow: var(--shadow-lg);
   }
   .nav-toggle { display: block; }
+
+  .subnav-inner { gap: 0.15rem; overflow-x: auto; }
+  .subnav a { font-size: 0.75rem; padding: 0.3rem 0.5rem; white-space: nowrap; }
+  .has-subnav .nav-links.open { top: 60px; }
 
   .hero h1 { font-size: 1.6rem; }
   .hero-meta { gap: 0.75rem; }
