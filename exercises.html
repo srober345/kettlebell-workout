@@ -7,6 +7,81 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .yt-thumb {
+      position: relative;
+      display: block;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      aspect-ratio: 16/9;
+    }
+    .yt-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+    .yt-thumb:hover img { opacity: 1; }
+    .yt-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 48px;
+      background: rgba(255,0,0,0.85);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .yt-thumb:hover .yt-play { background: #ff0000; }
+    .yt-play::after {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 10px 0 10px 18px;
+      border-color: transparent transparent transparent #fff;
+      margin-left: 3px;
+    }
+    .yt-label {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--gray-600);
+    }
+    .yt-label a { color: var(--orange); font-weight: 600; }
+
+    /* SVG exercise illustrations */
+    .exercise-illust {
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+    }
+    .exercise-illust svg {
+      max-width: 280px;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+    .exercise-illust .illust-label {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      text-align: center;
+    }
+    .exercise-illust .tutorial-link {
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -31,7 +106,7 @@
     <section class="hero">
       <div class="container">
         <h1>Exercise Library</h1>
-        <p class="hero-subtitle">Video demos and form cues for all 12 exercises</p>
+        <p class="hero-subtitle">Click any video thumbnail to watch on YouTube &mdash; form cues for all 12 exercises</p>
       </div>
     </section>
 
@@ -46,8 +121,12 @@
             <span class="phase-badge phase-power">Power</span>
           </div>
           <div class="exercise-card-body">
-            <div class="video-wrap">
-              <iframe src="https://www.youtube.com/embed/-Kf5mKayV3E" title="Kettlebell Swing Tutorial" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <div>
+              <a href="https://www.youtube.com/watch?v=-Kf5mKayV3E" target="_blank" class="yt-thumb">
+                <img src="https://img.youtube.com/vi/-Kf5mKayV3E/hqdefault.jpg" alt="Kettlebell Swing Tutorial">
+                <div class="yt-play"></div>
+              </a>
+              <div class="yt-label"><a href="https://www.youtube.com/watch?v=-Kf5mKayV3E" target="_blank">Watch: Cavemantraining &mdash; How to Kettlebell Swing</a></div>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -74,9 +153,37 @@
             <span class="phase-badge phase-power">Power</span>
           </div>
           <div class="exercise-card-body">
-            <div class="no-video">
-              <p>Detailed tutorial available at:</p>
-              <a href="https://kettlebellsworkouts.com/teaching-points-for-the-kettlebell-high-pull/" target="_blank" class="btn btn-outline">KettlebellsWorkouts.com Tutorial</a>
+            <div class="exercise-illust">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Start position -->
+                <g opacity="0.4">
+                  <circle cx="70" cy="40" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="70" y1="54" x2="70" y2="110" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="110" x2="55" y2="160" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="110" x2="85" y2="160" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="70" x2="50" y2="120" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="70" x2="90" y2="120" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="60" y="118" width="20" height="12" rx="3" fill="#e8632b" opacity="0.6"/>
+                  <text x="70" y="185" text-anchor="middle" font-size="11" fill="#6b7280">Start</text>
+                </g>
+                <!-- End position -->
+                <g>
+                  <circle cx="200" cy="40" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="200" y1="54" x2="200" y2="110" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="110" x2="185" y2="160" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="110" x2="215" y2="160" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Arms up with elbows high -->
+                  <line x1="200" y1="70" x2="175" y2="55" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="175" y1="55" x2="180" y2="75" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="170" y="72" width="20" height="12" rx="3" fill="#e8632b"/>
+                  <text x="200" y="185" text-anchor="middle" font-size="11" fill="#6b7280">Pull to chin</text>
+                </g>
+                <!-- Arrow -->
+                <path d="M 100 100 C 130 80 140 80 170 100" fill="none" stroke="#e8632b" stroke-width="1.5" stroke-dasharray="4"/>
+                <polygon points="168,96 174,100 168,104" fill="#e8632b"/>
+                <text x="140" y="210" text-anchor="middle" font-size="10" fill="#b0b8c4">Hip-driven pull &mdash; elbow points to ceiling</text>
+              </svg>
+              <a href="https://kettlebellsworkouts.com/teaching-points-for-the-kettlebell-high-pull/" target="_blank" class="btn btn-outline tutorial-link">Full Tutorial: KettlebellsWorkouts.com</a>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -103,8 +210,12 @@
             <span class="phase-badge phase-power">Power</span>
           </div>
           <div class="exercise-card-body">
-            <div class="video-wrap">
-              <iframe src="https://www.youtube.com/embed/iHQjOK3igfU" title="Rotational Pivot Swing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <div>
+              <a href="https://www.youtube.com/watch?v=iHQjOK3igfU" target="_blank" class="yt-thumb">
+                <img src="https://img.youtube.com/vi/iHQjOK3igfU/hqdefault.jpg" alt="Rotational Pivot Swing">
+                <div class="yt-play"></div>
+              </a>
+              <div class="yt-label"><a href="https://www.youtube.com/watch?v=iHQjOK3igfU" target="_blank">Watch: Cavemantraining &mdash; Rotational Pivot Swing</a></div>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -131,8 +242,12 @@
             <span class="phase-badge phase-compound-pull">Compound Pull</span>
           </div>
           <div class="exercise-card-body">
-            <div class="video-wrap">
-              <iframe src="https://www.youtube.com/embed/kgFPqVbYSm8" title="Kettlebell Row" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <div>
+              <a href="https://www.youtube.com/watch?v=kgFPqVbYSm8" target="_blank" class="yt-thumb">
+                <img src="https://img.youtube.com/vi/kgFPqVbYSm8/hqdefault.jpg" alt="Kettlebell Row">
+                <div class="yt-play"></div>
+              </a>
+              <div class="yt-label"><a href="https://www.youtube.com/watch?v=kgFPqVbYSm8" target="_blank">Watch: Cavemantraining &mdash; KB Bent-Over Row</a></div>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -159,9 +274,35 @@
             <span class="phase-badge phase-compound-push">Compound Push</span>
           </div>
           <div class="exercise-card-body">
-            <div class="no-video">
-              <p>Detailed tutorial available at:</p>
-              <a href="https://strongandfit.com/blogs/news/kettlebell-standing-chest-press" target="_blank" class="btn btn-outline">Strongandfit.com Tutorial</a>
+            <div class="exercise-illust">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Start: bell at chest -->
+                <g opacity="0.4">
+                  <circle cx="70" cy="45" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="70" y1="59" x2="70" y2="120" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="120" x2="55" y2="170" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="120" x2="85" y2="170" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="75" x2="80" y2="95" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="80" y1="95" x2="78" y2="85" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="72" y="80" width="16" height="12" rx="3" fill="#e8632b" opacity="0.6"/>
+                  <text x="70" y="195" text-anchor="middle" font-size="11" fill="#6b7280">At chest</text>
+                </g>
+                <!-- End: arms extended forward -->
+                <g>
+                  <circle cx="200" cy="45" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="200" y1="59" x2="200" y2="120" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="120" x2="185" y2="170" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="120" x2="215" y2="170" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Arms extended forward -->
+                  <line x1="200" y1="75" x2="245" y2="80" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="240" y="74" width="20" height="12" rx="3" fill="#e8632b"/>
+                  <text x="200" y="195" text-anchor="middle" font-size="11" fill="#6b7280">Pressed out</text>
+                </g>
+                <path d="M 100 90 C 130 75 150 75 180 85" fill="none" stroke="#e8632b" stroke-width="1.5" stroke-dasharray="4"/>
+                <polygon points="178,81 184,85 178,89" fill="#e8632b"/>
+                <text x="140" y="210" text-anchor="middle" font-size="10" fill="#b0b8c4">Press horizontally from chest &mdash; full extension</text>
+              </svg>
+              <a href="https://strongandfit.com/blogs/news/kettlebell-standing-chest-press" target="_blank" class="btn btn-outline tutorial-link">Full Tutorial: Strongandfit.com</a>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -188,8 +329,12 @@
             <span class="phase-badge phase-compound-push">Compound Push</span>
           </div>
           <div class="exercise-card-body">
-            <div class="video-wrap">
-              <iframe src="https://www.youtube.com/embed/He8TyCcK0sc" title="Kettlebell Strict Press" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <div>
+              <a href="https://www.youtube.com/watch?v=He8TyCcK0sc" target="_blank" class="yt-thumb">
+                <img src="https://img.youtube.com/vi/He8TyCcK0sc/hqdefault.jpg" alt="Kettlebell Strict Press">
+                <div class="yt-play"></div>
+              </a>
+              <div class="yt-label"><a href="https://www.youtube.com/watch?v=He8TyCcK0sc" target="_blank">Watch: Eric Leija &mdash; Kettlebell Strict Press</a></div>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -216,9 +361,39 @@
             <span class="phase-badge phase-accessory">Accessory</span>
           </div>
           <div class="exercise-card-body">
-            <div class="no-video">
-              <p>Detailed tutorial available at:</p>
-              <a href="https://liftmanual.com/kettlebell-front-raise/" target="_blank" class="btn btn-outline">LiftManual.com Tutorial</a>
+            <div class="exercise-illust">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Start: arms at sides -->
+                <g opacity="0.4">
+                  <circle cx="70" cy="40" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="70" y1="54" x2="70" y2="115" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="115" x2="55" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="115" x2="85" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Arms down at sides -->
+                  <line x1="70" y1="70" x2="55" y2="120" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="70" x2="85" y2="120" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="45" y="116" width="16" height="10" rx="3" fill="#e8632b" opacity="0.6"/>
+                  <rect x="79" y="116" width="16" height="10" rx="3" fill="#e8632b" opacity="0.6"/>
+                  <text x="70" y="190" text-anchor="middle" font-size="11" fill="#6b7280">Arms at sides</text>
+                </g>
+                <!-- End: arms raised forward to chest height -->
+                <g>
+                  <circle cx="200" cy="40" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="200" y1="54" x2="200" y2="115" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="115" x2="185" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="115" x2="215" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Arms raised forward -->
+                  <line x1="200" y1="70" x2="240" y2="75" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="70" x2="160" y2="75" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="235" y="69" width="16" height="10" rx="3" fill="#e8632b"/>
+                  <rect x="148" y="69" width="16" height="10" rx="3" fill="#e8632b"/>
+                  <text x="200" y="190" text-anchor="middle" font-size="11" fill="#6b7280">Raised to chest</text>
+                </g>
+                <path d="M 100 105 C 130 85 150 80 170 80" fill="none" stroke="#e8632b" stroke-width="1.5" stroke-dasharray="4"/>
+                <polygon points="168,76 174,80 168,84" fill="#e8632b"/>
+                <text x="140" y="210" text-anchor="middle" font-size="10" fill="#b0b8c4">Forward arc from sides to chest height</text>
+              </svg>
+              <a href="https://liftmanual.com/kettlebell-front-raise/" target="_blank" class="btn btn-outline tutorial-link">Full Tutorial: LiftManual.com</a>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -245,9 +420,47 @@
             <span class="phase-badge phase-accessory">Accessory</span>
           </div>
           <div class="exercise-card-body">
-            <div class="no-video">
-              <p>Detailed tutorial available at:</p>
-              <a href="https://strongandfit.com/blogs/news/kettlebell-curl-to-press" target="_blank" class="btn btn-outline">Strongandfit.com Tutorial</a>
+            <div class="exercise-illust">
+              <svg viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Phase 1: arm down -->
+                <g opacity="0.35">
+                  <circle cx="55" cy="40" r="12" fill="none" stroke="#1a3c6e" stroke-width="2"/>
+                  <line x1="55" y1="52" x2="55" y2="105" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="55" y1="105" x2="43" y2="150" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="55" y1="105" x2="67" y2="150" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="55" y1="68" x2="55" y2="115" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <rect x="47" y="111" width="16" height="10" rx="3" fill="#e8632b" opacity="0.5"/>
+                  <text x="55" y="175" text-anchor="middle" font-size="9" fill="#6b7280">Start</text>
+                </g>
+                <!-- Phase 2: curled to shoulder -->
+                <g opacity="0.65">
+                  <circle cx="150" cy="40" r="12" fill="none" stroke="#1a3c6e" stroke-width="2"/>
+                  <line x1="150" y1="52" x2="150" y2="105" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="150" y1="105" x2="138" y2="150" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="150" y1="105" x2="162" y2="150" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="150" y1="68" x2="150" y2="90" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="150" y1="90" x2="158" y2="72" stroke="#1a3c6e" stroke-width="2" stroke-linecap="round"/>
+                  <rect x="152" y="64" width="16" height="10" rx="3" fill="#e8632b" opacity="0.7"/>
+                  <text x="150" y="175" text-anchor="middle" font-size="9" fill="#6b7280">Curl</text>
+                </g>
+                <!-- Phase 3: pressed overhead -->
+                <g>
+                  <circle cx="260" cy="40" r="12" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="260" y1="52" x2="260" y2="105" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="260" y1="105" x2="248" y2="150" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="260" y1="105" x2="272" y2="150" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="260" y1="68" x2="265" y2="22" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="257" y="8" width="16" height="10" rx="3" fill="#e8632b"/>
+                  <text x="260" y="175" text-anchor="middle" font-size="9" fill="#6b7280">Press</text>
+                </g>
+                <!-- Arrows -->
+                <path d="M 80 90 L 120 80" fill="none" stroke="#e8632b" stroke-width="1.5" stroke-dasharray="4"/>
+                <polygon points="118,76 124,80 118,84" fill="#e8632b"/>
+                <path d="M 185 60 L 230 40" fill="none" stroke="#e8632b" stroke-width="1.5" stroke-dasharray="4"/>
+                <polygon points="228,36 234,40 228,44" fill="#e8632b"/>
+                <text x="170" y="205" text-anchor="middle" font-size="10" fill="#b0b8c4">One fluid motion: curl &rarr; shoulder &rarr; press to sky</text>
+              </svg>
+              <a href="https://strongandfit.com/blogs/news/kettlebell-curl-to-press" target="_blank" class="btn btn-outline tutorial-link">Full Tutorial: Strongandfit.com</a>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -274,9 +487,36 @@
             <span class="phase-badge phase-isolation">Isolation</span>
           </div>
           <div class="exercise-card-body">
-            <div class="no-video">
-              <p>Detailed tutorial available at:</p>
-              <a href="https://strongandfit.com/blogs/news/kettlebell-overhead-tricep-extension" target="_blank" class="btn btn-outline">Strongandfit.com Tutorial</a>
+            <div class="exercise-illust">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Start: bell behind head (lowered) -->
+                <g opacity="0.4">
+                  <circle cx="70" cy="40" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="70" y1="54" x2="70" y2="115" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="115" x2="55" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="115" x2="85" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Arms up, forearms back -->
+                  <line x1="70" y1="68" x2="70" y2="38" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="70" y1="38" x2="55" y2="60" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="45" y="56" width="18" height="12" rx="3" fill="#e8632b" opacity="0.6"/>
+                  <text x="70" y="190" text-anchor="middle" font-size="11" fill="#6b7280">Lowered</text>
+                </g>
+                <!-- End: fully extended overhead -->
+                <g>
+                  <circle cx="200" cy="40" r="14" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                  <line x1="200" y1="54" x2="200" y2="115" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="115" x2="185" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="200" y1="115" x2="215" y2="165" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Arms straight up -->
+                  <line x1="200" y1="68" x2="200" y2="12" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                  <rect x="191" y="2" width="18" height="12" rx="3" fill="#e8632b"/>
+                  <text x="200" y="190" text-anchor="middle" font-size="11" fill="#6b7280">Extended</text>
+                </g>
+                <path d="M 85 55 C 110 30 160 20 190 18" fill="none" stroke="#e8632b" stroke-width="1.5" stroke-dasharray="4"/>
+                <polygon points="188,14 194,18 188,22" fill="#e8632b"/>
+                <text x="140" y="210" text-anchor="middle" font-size="10" fill="#b0b8c4">Elbows stay tight to head &mdash; full stretch to lockout</text>
+              </svg>
+              <a href="https://strongandfit.com/blogs/news/kettlebell-overhead-tricep-extension" target="_blank" class="btn btn-outline tutorial-link">Full Tutorial: Strongandfit.com</a>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -303,8 +543,12 @@
             <span class="phase-badge phase-core">Core</span>
           </div>
           <div class="exercise-card-body">
-            <div class="video-wrap">
-              <iframe src="https://www.youtube.com/embed/okOIfmvv-lo" title="Kettlebell Side Bend" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <div>
+              <a href="https://www.youtube.com/watch?v=okOIfmvv-lo" target="_blank" class="yt-thumb">
+                <img src="https://img.youtube.com/vi/okOIfmvv-lo/hqdefault.jpg" alt="Kettlebell Side Bend">
+                <div class="yt-play"></div>
+              </a>
+              <div class="yt-label"><a href="https://www.youtube.com/watch?v=okOIfmvv-lo" target="_blank">Watch: Cavemantraining &mdash; KB Side Bend</a></div>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -331,8 +575,12 @@
             <span class="phase-badge phase-mobility">Mobility</span>
           </div>
           <div class="exercise-card-body">
-            <div class="video-wrap">
-              <iframe src="https://www.youtube.com/embed/N4mMVG8S5Kg" title="Kettlebell Around The World" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <div>
+              <a href="https://www.youtube.com/watch?v=N4mMVG8S5Kg" target="_blank" class="yt-thumb">
+                <img src="https://img.youtube.com/vi/N4mMVG8S5Kg/hqdefault.jpg" alt="Kettlebell Around The World">
+                <div class="yt-play"></div>
+              </a>
+              <div class="yt-label"><a href="https://www.youtube.com/watch?v=N4mMVG8S5Kg" target="_blank">Watch: Onnit &mdash; KB Around The World</a></div>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
@@ -359,11 +607,28 @@
             <span class="phase-badge phase-mobility">Mobility</span>
           </div>
           <div class="exercise-card-body">
-            <div class="no-video">
-              <p>Detailed tutorials available at:</p>
-              <a href="https://www.kettlebellkings.com/blogs/default-blog/kettlebell-halo-exercise" target="_blank" class="btn btn-outline" style="margin-bottom:0.5rem;">Kettlebell Kings Tutorial</a>
-              <br>
-              <a href="https://www.liveleantv.com/how-to-do-the-kettlebell-halo/" target="_blank" class="btn btn-outline">Live Lean TV Tutorial</a>
+            <div class="exercise-illust">
+              <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Person with circular arrow around head -->
+                <circle cx="140" cy="55" r="18" fill="none" stroke="#1a3c6e" stroke-width="2.5"/>
+                <line x1="140" y1="73" x2="140" y2="140" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="140" y1="140" x2="120" y2="185" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="140" y1="140" x2="160" y2="185" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Arms up holding bell near head -->
+                <line x1="140" y1="90" x2="120" y2="65" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="140" y1="90" x2="160" y2="65" stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Circular path around head -->
+                <ellipse cx="140" cy="50" rx="42" ry="35" fill="none" stroke="#e8632b" stroke-width="2" stroke-dasharray="6 3"/>
+                <!-- Arrow on the circle -->
+                <polygon points="175,30 183,35 177,40" fill="#e8632b"/>
+                <!-- Bell on the path -->
+                <rect x="96" y="36" width="16" height="12" rx="3" fill="#e8632b"/>
+                <text x="140" y="210" text-anchor="middle" font-size="10" fill="#b0b8c4">Circle the bell around head &mdash; slow, close, controlled</text>
+              </svg>
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center;">
+                <a href="https://www.kettlebellkings.com/blogs/default-blog/kettlebell-halo-exercise" target="_blank" class="btn btn-outline tutorial-link">Kettlebell Kings Tutorial</a>
+                <a href="https://www.liveleantv.com/how-to-do-the-kettlebell-halo/" target="_blank" class="btn btn-outline tutorial-link">Live Lean TV Tutorial</a>
+              </div>
             </div>
             <div class="form-cues">
               <h4>Form Cues</h4>
