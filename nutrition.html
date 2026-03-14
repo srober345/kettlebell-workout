@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutrition | RD's Workout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Nutrition-specific styles */
+    .day-hero.nutrition { background: linear-gradient(135deg, #065f46 0%, #059669 100%); color: white; }
+
+    .macro-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .macro-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      text-align: center;
+      border-top: 4px solid var(--navy);
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .macro-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .macro-card.protein { border-top-color: #dc2626; }
+    .macro-card.carbs { border-top-color: #d97706; }
+    .macro-card.fat { border-top-color: #2563eb; }
+    .macro-card.calories { border-top-color: #059669; }
+
+    .macro-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .macro-card.protein .macro-value { color: #dc2626; }
+    .macro-card.carbs .macro-value { color: #d97706; }
+    .macro-card.fat .macro-value { color: #2563eb; }
+    .macro-card.calories .macro-value { color: #059669; }
+
+    .macro-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--gray-600);
+      margin-bottom: 0.5rem;
+    }
+    .macro-detail { font-size: 0.8rem; color: var(--gray-600); }
+
+    .day-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .day-toggle button {
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      border: 2px solid var(--navy);
+      background: transparent;
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+    .day-toggle button.active,
+    .day-toggle button:hover { background: var(--navy); color: var(--white); }
+
+    .target-set { display: none; }
+    .target-set.active { display: block; }
+
+    .source-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .source-item {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .source-amount {
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      min-width: 50px;
+      text-align: right;
+    }
+    .source-name { font-size: 0.9rem; color: var(--gray-600); }
+
+    .meal-timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .meal-timeline::before {
+      content: "";
+      position: absolute;
+      left: 0.5rem;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--gray-100);
+      border-radius: 2px;
+    }
+    .meal-item {
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    .meal-item:last-child { padding-bottom: 0; }
+    .meal-item::before {
+      content: "";
+      position: absolute;
+      left: -1.65rem;
+      top: 0.35rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 3px solid var(--bg);
+    }
+    .meal-item h4 { color: var(--navy); font-size: 1rem; margin-bottom: 0.25rem; }
+    .meal-time { font-size: 0.8rem; color: var(--orange); font-weight: 600; margin-bottom: 0.5rem; }
+    .meal-item ul { list-style: none; }
+    .meal-item li { padding: 0.2rem 0; font-size: 0.9rem; color: var(--gray-600); }
+    .meal-item li::before { content: "→ "; color: var(--orange); font-weight: 700; }
+    .meal-protein { font-weight: 600; color: var(--navy); }
+
+    .supplement-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .supplement-card h4 { color: var(--navy); margin-bottom: 0.5rem; }
+    .evidence-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.5rem;
+    }
+    .evidence-strong { background: #d1fae5; color: #065f46; }
+    .evidence-moderate { background: #fef3c7; color: #92400e; }
+    .evidence-conditional { background: #dbeafe; color: #1e40af; }
+    .supplement-card p { font-size: 0.9rem; color: var(--gray-600); margin-bottom: 0.5rem; }
+    .supplement-dose { font-size: 0.85rem; font-weight: 600; color: var(--navy); }
+
+    .myth-card {
+      background: var(--white);
+      border-left: 4px solid #dc2626;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .myth-card h4 { color: #dc2626; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .myth-card p { font-size: 0.9rem; color: var(--gray-600); }
+
+    .ref-list { list-style: none; }
+    .ref-list li {
+      padding: 0.4rem 0;
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .ref-list li:last-child { border-bottom: none; }
+    .ref-list a { color: var(--navy); font-weight: 500; }
+
+    @media (max-width: 768px) {
+      .macro-grid { grid-template-columns: repeat(2, 1fr); }
+      .source-list { grid-template-columns: 1fr; }
+      .day-toggle button { font-size: 0.8rem; padding: 0.4rem 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">RD's <span>Workout</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="kettlebell.html">Kettlebell</a></li>
+        <li><a href="abs.html">Abs</a></li>
+        <li><a href="nutrition.html" class="active">Nutrition</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="day-hero nutrition">
+      <div class="container">
+        <div class="day-tag">Evidence-Based</div>
+        <h1>Nutrition for Body Recomposition</h1>
+        <p class="hero-subtitle">Lose Fat &amp; Build Lean Muscle &mdash; Backed by Peer-Reviewed Research</p>
+        <div class="day-info">
+          <div class="day-info-item"><strong>Goal:</strong>&nbsp;Recomposition</div>
+          <div class="day-info-item"><strong>Method:</strong>&nbsp;Calorie cycling + high protein</div>
+          <div class="day-info-item"><strong>Based On:</strong>&nbsp;ISSN, ACSM, PMC meta-analyses</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How Recomposition Works -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>How Body Recomposition Works</h2>
+          <p>You don't need to bulk and cut &mdash; science shows you can do both simultaneously</p>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-number">1</div>
+            <h3>Eat at Maintenance</h3>
+            <p>Body recomposition works by eating at or near maintenance calories &mdash; not in a large deficit. You fuel muscle growth on training days and tap fat stores on rest days. (PMC, 2024)</p>
+          </div>
+          <div class="card">
+            <div class="card-number">2</div>
+            <h3>Prioritize Protein</h3>
+            <p>High protein intake (1.6&ndash;2.2 g/kg/day) is the single most important dietary factor. Protein drives muscle protein synthesis and protects lean mass during any deficit. (ISSN Position Stand)</p>
+          </div>
+          <div class="card">
+            <div class="card-number">3</div>
+            <h3>Cycle Your Carbs</h3>
+            <p>Eat more carbs on training days to fuel performance and recovery. Reduce carbs on rest days to encourage fat oxidation. Protein and fat stay consistent. (Frontiers in Nutrition, 2024)</p>
+          </div>
+          <div class="card">
+            <div class="card-number">4</div>
+            <h3>Train Hard, Eat Smart</h3>
+            <p>Your 6-day program (3 kettlebell + 3 abs) provides the resistance training stimulus. Nutrition supplies the raw materials. Neither works alone for recomposition.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Your Daily Targets -->
+    <section class="section section-alt" id="targets">
+      <div class="container">
+        <div class="section-header">
+          <h2>Your Daily Targets</h2>
+          <p>Personalized for your profile: 48 years old, 5'9&frac34;", 155 lbs, training 6 days/week</p>
+        </div>
+
+        <div class="day-toggle">
+          <button class="active" onclick="showTargets('training')">Training Days (Mon&ndash;Sat)</button>
+          <button onclick="showTargets('rest')">Rest Day (Sunday)</button>
+        </div>
+
+        <!-- Training Day Targets -->
+        <div id="training-targets" class="target-set active">
+          <div class="macro-grid">
+            <div class="macro-card calories">
+              <div class="macro-label">Calories</div>
+              <div class="macro-value">2,500</div>
+              <div class="macro-detail">Maintenance level</div>
+            </div>
+            <div class="macro-card protein">
+              <div class="macro-label">Protein</div>
+              <div class="macro-value">140g</div>
+              <div class="macro-detail">2.0 g/kg &mdash; 560 kcal (22%)</div>
+            </div>
+            <div class="macro-card carbs">
+              <div class="macro-label">Carbs</div>
+              <div class="macro-value">280g</div>
+              <div class="macro-detail">Fuel for training &mdash; 1,120 kcal (45%)</div>
+            </div>
+            <div class="macro-card fat">
+              <div class="macro-label">Fat</div>
+              <div class="macro-value">90g</div>
+              <div class="macro-detail">Hormones &amp; absorption &mdash; 810 kcal (33%)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rest Day Targets -->
+        <div id="rest-targets" class="target-set">
+          <div class="macro-grid">
+            <div class="macro-card calories">
+              <div class="macro-label">Calories</div>
+              <div class="macro-value">2,250</div>
+              <div class="macro-detail">~10% below maintenance</div>
+            </div>
+            <div class="macro-card protein">
+              <div class="macro-label">Protein</div>
+              <div class="macro-value">140g</div>
+              <div class="macro-detail">2.0 g/kg &mdash; stays the same</div>
+            </div>
+            <div class="macro-card carbs">
+              <div class="macro-label">Carbs</div>
+              <div class="macro-value">200g</div>
+              <div class="macro-detail">Reduced &mdash; 800 kcal (36%)</div>
+            </div>
+            <div class="macro-card fat">
+              <div class="macro-label">Fat</div>
+              <div class="macro-value">97g</div>
+              <div class="macro-detail">Slightly higher &mdash; 870 kcal (39%)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem; background: var(--gray-50); box-shadow: none;">
+          <h3>How These Numbers Were Calculated</h3>
+          <p>BMR via Mifflin-St Jeor equation: 10 &times; 70.3 kg + 6.25 &times; 177.2 cm &minus; 5 &times; 48 + 5 = <strong>1,576 kcal</strong>. Multiplied by activity factor 1.6 (6 training days/week) = <strong>~2,520 kcal TDEE</strong>. Training days round to 2,500 (maintenance). Rest day applies ~10% deficit for fat oxidation while protein stays constant to protect muscle.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Protein: The Key Nutrient -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Protein: The Key Nutrient</h2>
+          <p>For adults over 40, protein is the single most protective factor against muscle loss</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-number">1</div>
+            <h3>Why 2.0 g/kg</h3>
+            <p>The ISSN and ACSM recommend 1.6&ndash;2.2 g/kg/day for exercising individuals. A 2024 RCT showed 1.6 g/kg is superior to 0.8 g/kg for muscle mass gains in older adults. At 48, the higher end of the range (2.0 g/kg = 140g) counteracts age-related anabolic resistance.</p>
+          </div>
+          <div class="card">
+            <div class="card-number">2</div>
+            <h3>The Leucine Threshold</h3>
+            <p>Older adults need ~2.8&ndash;3.0g of leucine per meal to trigger muscle protein synthesis (MPS). This translates to 30&ndash;40g of high-quality protein per meal. Below this threshold, the MPS signal doesn't fire. (Zaromskyte et al., 2021; PMC 2023)</p>
+          </div>
+          <div class="card">
+            <div class="card-number">3</div>
+            <h3>Distribute Evenly</h3>
+            <p>MPS was 25% higher when protein was distributed evenly across meals vs. skewed toward dinner (Mamerow et al., 2014). Target ~35g per meal across 4 eating occasions to stay above the leucine threshold each time.</p>
+          </div>
+          <div class="card">
+            <div class="card-number">4</div>
+            <h3>Anabolic Resistance</h3>
+            <p>After 40, your muscles become less responsive to protein &mdash; a phenomenon called "anabolic resistance." Higher per-meal protein doses and resistance training together overcome this. Your kettlebell program is the resistance stimulus; protein is the raw material.</p>
+          </div>
+        </div>
+
+        <!-- Top Protein Sources -->
+        <div style="margin-top: 2rem;">
+          <h3 style="color: var(--navy); margin-bottom: 0.5rem;">Top Protein Sources (per serving)</h3>
+          <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 1rem;">Leucine-rich animal proteins are most effective for MPS in older adults. 20g whey or 40g soy triggered MPS; 20g soy did not.</p>
+          <div class="source-list">
+            <div class="source-item">
+              <span class="source-amount">31g</span>
+              <span class="source-name">Chicken breast (4 oz / 113g)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">29g</span>
+              <span class="source-name">Salmon fillet (4 oz / 113g)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">28g</span>
+              <span class="source-name">Lean ground turkey (4 oz / 113g)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">26g</span>
+              <span class="source-name">Lean ground beef 93% (4 oz / 113g)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">25g</span>
+              <span class="source-name">Whey protein isolate (1 scoop / 30g)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">20g</span>
+              <span class="source-name">Greek yogurt (1 cup / 227g)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">18g</span>
+              <span class="source-name">Cottage cheese (1 cup / 226g)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">14g</span>
+              <span class="source-name">Eggs (2 large)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">8g</span>
+              <span class="source-name">Milk (1 cup / 240ml)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-amount">8g</span>
+              <span class="source-name">Black beans (1/2 cup cooked)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Meal Timing & Distribution -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <h2>Meal Timing &amp; Distribution</h2>
+          <p>When you eat matters less than what you eat &mdash; but smart timing helps</p>
+        </div>
+
+        <div class="card-grid" style="margin-bottom: 2rem;">
+          <div class="card">
+            <h3>The "Anabolic Window" Is a Myth</h3>
+            <p>The idea that you must eat protein within 30 minutes post-workout has been debunked. A meta-analysis of 65 RCTs (2,900 participants) found that <strong>total daily protein intake</strong> &mdash; not timing &mdash; predicted muscle growth. The anabolic response to training actually persists for 48&ndash;72 hours. (Schoenfeld et al., 2013; JOSPT, 2019)</p>
+          </div>
+          <div class="card">
+            <h3>What Does Matter</h3>
+            <p>Distribute protein across 3&ndash;4 meals to stay above the leucine threshold each time. MPS peaks within 30 minutes of eating protein and stays elevated for ~3 hours. Spacing meals 3&ndash;5 hours apart gives each dose its full anabolic window. (PMC, 2014)</p>
+          </div>
+        </div>
+
+        <h3 style="color: var(--navy); text-align: center; margin-bottom: 1.5rem;">Sample Meal Timing &mdash; Training Day</h3>
+
+        <div class="quick-ref" style="grid-template-columns: 1fr 1fr;">
+          <div class="quick-ref-list">
+            <h3>Kettlebell Day (Mon/Wed/Fri)</h3>
+            <div class="meal-timeline">
+              <div class="meal-item">
+                <h4>Meal 1: Pre-Training</h4>
+                <div class="meal-time">60&ndash;90 min before workout</div>
+                <ul>
+                  <li>3 eggs + 2 slices whole grain toast</li>
+                  <li>1 banana</li>
+                  <li><span class="meal-protein">~35g protein</span></li>
+                </ul>
+              </div>
+              <div class="meal-item">
+                <h4>Meal 2: Post-Training</h4>
+                <div class="meal-time">Within 2 hours after workout</div>
+                <ul>
+                  <li>Chicken breast (5 oz) + rice (1 cup) + vegetables</li>
+                  <li><span class="meal-protein">~38g protein</span></li>
+                </ul>
+              </div>
+              <div class="meal-item">
+                <h4>Meal 3: Afternoon/Dinner</h4>
+                <div class="meal-time">3&ndash;5 hours after Meal 2</div>
+                <ul>
+                  <li>Salmon (5 oz) + sweet potato + steamed broccoli</li>
+                  <li><span class="meal-protein">~36g protein</span></li>
+                </ul>
+              </div>
+              <div class="meal-item">
+                <h4>Meal 4: Evening</h4>
+                <div class="meal-time">1&ndash;2 hours before bed</div>
+                <ul>
+                  <li>Greek yogurt (1 cup) + handful of almonds + berries</li>
+                  <li><span class="meal-protein">~31g protein</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="quick-ref-list">
+            <h3>Abs Day (Tue/Thu/Sat)</h3>
+            <div class="meal-timeline">
+              <div class="meal-item">
+                <h4>Meal 1: Breakfast</h4>
+                <div class="meal-time">Before or after abs session</div>
+                <ul>
+                  <li>Greek yogurt (1 cup) + oats (1/2 cup) + walnuts</li>
+                  <li><span class="meal-protein">~30g protein</span></li>
+                </ul>
+              </div>
+              <div class="meal-item">
+                <h4>Meal 2: Lunch</h4>
+                <div class="meal-time">Midday</div>
+                <ul>
+                  <li>Turkey burger (5 oz) + whole grain bun + side salad</li>
+                  <li><span class="meal-protein">~35g protein</span></li>
+                </ul>
+              </div>
+              <div class="meal-item">
+                <h4>Meal 3: Dinner</h4>
+                <div class="meal-time">Evening</div>
+                <ul>
+                  <li>Lean beef stir-fry (5 oz) + mixed vegetables + rice</li>
+                  <li><span class="meal-protein">~38g protein</span></li>
+                </ul>
+              </div>
+              <div class="meal-item">
+                <h4>Meal 4: Before Bed</h4>
+                <div class="meal-time">1&ndash;2 hours before sleep</div>
+                <ul>
+                  <li>Cottage cheese (1 cup) + casein is slow-digesting</li>
+                  <li><span class="meal-protein">~37g protein</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Carbs & Fat -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Carbs &amp; Fat: The Supporting Cast</h2>
+          <p>Protein gets top billing, but carbs and fat play critical roles</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-number">C</div>
+            <h3>Carbohydrates (280g training / 200g rest)</h3>
+            <p>Carbs are protein-sparing &mdash; they prevent your body from burning protein for fuel, leaving it available for muscle repair. They also replenish glycogen depleted during your 1,200-rep kettlebell sessions. Focus on whole grains, rice, potatoes, oats, fruit, and legumes. Avoid ultra-processed carbs (white bread, pastries, sugary cereals).</p>
+          </div>
+          <div class="card">
+            <div class="card-number">F</div>
+            <h3>Dietary Fat (90g training / 97g rest)</h3>
+            <p>Fat supports testosterone production &mdash; critical for muscle maintenance after 40. It also enables absorption of vitamins A, D, E, and K. Prioritize unsaturated fats: olive oil, avocado, nuts, fatty fish. Limit saturated fat to &lt;10% of calories (~25g). Avoid trans fats entirely.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap" style="margin-top: 1.5rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nutrient</th>
+                <th>Training Day</th>
+                <th>Rest Day</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="exercise-name">Protein</td>
+                <td>140g (22%)</td>
+                <td>140g (25%)</td>
+                <td>Muscle protein synthesis, muscle preservation</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Carbohydrates</td>
+                <td>280g (45%)</td>
+                <td>200g (36%)</td>
+                <td>Training fuel, glycogen replenishment, protein-sparing</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Fat</td>
+                <td>90g (33%)</td>
+                <td>97g (39%)</td>
+                <td>Hormone production, vitamin absorption, satiety</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Calories</td>
+                <td>2,500</td>
+                <td>2,250</td>
+                <td>Maintenance vs. mild deficit for fat loss</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hydration -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <h2>Hydration</h2>
+          <p>Dehydration reduces strength performance and blunts muscle protein synthesis</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="card">
+            <h3>Why It Matters for Muscle</h3>
+            <p>When muscle cells lose water, the rate of muscle protein synthesis slows &mdash; reducing recovery and growth. Dehydration also increases cortisol, which competes with testosterone receptors, further impairing the anabolic response to training. Studies show dehydrated athletes have reduced multi-rep resistance exercise performance and perceive exercise as harder. (NSCA; Judelson et al., 2007)</p>
+          </div>
+          <div class="card">
+            <h3>How Much</h3>
+            <ul style="list-style: none;">
+              <li style="padding: 0.4rem 0; font-size: 0.95rem;"><strong style="color: var(--navy);">Daily baseline:</strong> ~100 oz (3L) &mdash; active adult male guideline</li>
+              <li style="padding: 0.4rem 0; font-size: 0.95rem;"><strong style="color: var(--navy);">Pre-training:</strong> 16&ndash;24 oz in the 2 hours before exercise</li>
+              <li style="padding: 0.4rem 0; font-size: 0.95rem;"><strong style="color: var(--navy);">During training:</strong> 6&ndash;12 oz every 15&ndash;20 minutes</li>
+              <li style="padding: 0.4rem 0; font-size: 0.95rem;"><strong style="color: var(--navy);">Post-training:</strong> 16&ndash;24 oz for every pound of sweat lost</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Supplements -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Supplements: Only What Works</h2>
+          <p>Most supplements are marketing. These three have actual peer-reviewed evidence.</p>
+        </div>
+
+        <div class="supplement-card">
+          <h4>Creatine Monohydrate <span class="evidence-badge evidence-strong">Strong Evidence</span></h4>
+          <p>The most studied supplement in sports nutrition. Creatine enhances resistance exercise performance by fueling the phosphocreatine energy system, which increases training volume and quality. Meta-analyses show it increases muscle thickness and cross-sectional area in interventions lasting 8&ndash;12+ weeks when combined with resistance training. Safe for healthy adults with no evidence of kidney damage. (ISSN; Candow et al., 2022)</p>
+          <div class="supplement-dose">Dose: 3&ndash;5g per day, every day (no loading phase necessary)</div>
+        </div>
+
+        <div class="supplement-card">
+          <h4>Vitamin D <span class="evidence-badge evidence-conditional">Conditional</span></h4>
+          <p>Important for muscle and bone function, especially if your serum level is below 30 ng/mL. When combined with resistance training, vitamin D supplementation improves muscle strength and physical function in deficient individuals beyond exercise alone. However, once levels are sufficient (&gt;50 nmol/L), additional supplementation provides no further muscle benefit. Get your levels tested before supplementing. (PMC, 2018)</p>
+          <div class="supplement-dose">Dose: 800&ndash;2,000 IU/day (if deficient; get blood test first)</div>
+        </div>
+
+        <div class="supplement-card">
+          <h4>Omega-3 Fatty Acids (EPA/DHA) <span class="evidence-badge evidence-moderate">Moderate Evidence</span></h4>
+          <p>EPA and DHA are components of muscle membrane phospholipids and enhance protein kinase activity and mitochondrial function. They reduce inflammation that can impair recovery. Evidence is strongest in older or nutritionally compromised populations. They act as facilitators of training adaptation rather than direct drivers of muscle growth. Aim to get omega-3s from food (fatty fish 2&ndash;3x/week) first; supplement if dietary intake is low. (PMC, 2018; 2020)</p>
+          <div class="supplement-dose">Dose: 1&ndash;3g combined EPA+DHA per day (from fish oil or algae)</div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem; background: var(--gray-50); box-shadow: none; border-left: 4px solid var(--orange);">
+          <h3>What About Whey Protein?</h3>
+          <p>Whey isn't a "supplement" in the traditional sense &mdash; it's just food (a dairy byproduct). It's a convenient way to hit your 140g protein target when whole food meals fall short. Research shows 20&ndash;40g of whey protein stimulates MPS in older adults. Casein protein before bed stimulates overnight protein synthesis in both young and elderly men. Use these as tools, not requirements &mdash; whole food protein is equally effective.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Myths & Mistakes -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <h2>Common Myths to Ignore</h2>
+          <p>Internet fitness culture is full of bad science. Here's what the research actually shows.</p>
+        </div>
+
+        <div class="myth-card">
+          <h4>"You must eat within 30 minutes of training or you lose your gains"</h4>
+          <p>The "anabolic window" has been debunked. A meta-analysis of 65 RCTs found timing had no effect on muscle growth. The enhanced anabolic state from training lasts 48&ndash;72 hours. Total daily protein is what matters. (Schoenfeld et al., 2013)</p>
+        </div>
+
+        <div class="myth-card">
+          <h4>"High protein diets damage your kidneys"</h4>
+          <p>For healthy adults, extensive evidence shows protein intakes of 1.6&ndash;2.2 g/kg/day are safe with no kidney damage. This myth confuses managing existing kidney disease with causing it. (ISSN Position Stand)</p>
+        </div>
+
+        <div class="myth-card">
+          <h4>"Your body can only absorb 30g of protein per meal"</h4>
+          <p>Your body absorbs virtually all protein you eat. The 30g number refers to the amount that maximally stimulates MPS per meal in young adults. Older adults may need 40g+ per meal. Protein beyond the MPS cap is still used for other body functions, not wasted. (Schoenfeld &amp; Aragon, 2018)</p>
+        </div>
+
+        <div class="myth-card">
+          <h4>"You need to eat 6 small meals a day to keep your metabolism high"</h4>
+          <p>Meal frequency has no meaningful effect on metabolic rate or fat loss when total calories are equal. 3&ndash;4 meals per day is optimal for protein distribution, but there's no metabolic advantage to eating more frequently. (ISSN Nutrient Timing Position Stand)</p>
+        </div>
+
+        <div class="myth-card">
+          <h4>"Carbs make you fat"</h4>
+          <p>Calories make you fat &mdash; not carbs. Carbohydrates are protein-sparing molecules that augment the muscle-building effects of a high-protein diet. Cutting carbs severely impairs training performance and recovery. (Frontiers in Nutrition, 2024)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Micronutrients -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Key Micronutrients for Muscle at 48</h2>
+          <p>Get these from whole foods first &mdash; supplement only if diet falls short</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nutrient</th>
+                <th>Daily Target</th>
+                <th>Top Food Sources</th>
+                <th>Why It Matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="exercise-name">Magnesium</td>
+                <td>420 mg</td>
+                <td>Spinach, almonds, black beans, avocado</td>
+                <td>Muscle contraction, protein synthesis, sleep quality</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Zinc</td>
+                <td>11 mg</td>
+                <td>Beef, pumpkin seeds, chickpeas, cashews</td>
+                <td>Testosterone production, immune function, recovery</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Vitamin D</td>
+                <td>800&ndash;2,000 IU</td>
+                <td>Salmon, fortified milk, egg yolks, sunlight</td>
+                <td>Muscle strength, bone density, immune function</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Calcium</td>
+                <td>1,000 mg</td>
+                <td>Dairy, sardines, fortified foods, kale</td>
+                <td>Bone density, muscle contraction signaling</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Potassium</td>
+                <td>3,400 mg</td>
+                <td>Bananas, sweet potato, spinach, yogurt</td>
+                <td>Muscle function, electrolyte balance, blood pressure</td>
+              </tr>
+              <tr>
+                <td class="exercise-name">Iron</td>
+                <td>8 mg</td>
+                <td>Red meat, lentils, spinach, fortified cereals</td>
+                <td>Oxygen transport to muscles during exercise</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Reference -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <h2>Quick Reference</h2>
+        </div>
+        <div class="quick-ref">
+          <div class="quick-ref-list">
+            <h3>Daily Checklist</h3>
+            <ol>
+              <li>Hit 140g protein (4 meals &times; 35g)</li>
+              <li>Eat 2,500 kcal training / 2,250 rest</li>
+              <li>Drink 100+ oz water</li>
+              <li>Take 5g creatine</li>
+              <li>Eat 2+ servings vegetables</li>
+              <li>Get 7&ndash;9 hours sleep</li>
+            </ol>
+          </div>
+          <div class="quick-ref-list">
+            <h3>Rules of Thumb</h3>
+            <div class="table-wrap" style="box-shadow:none;">
+              <table>
+                <thead>
+                  <tr><th>Principle</th><th>Target</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><strong>Protein per meal</strong></td><td>30&ndash;40g minimum</td></tr>
+                  <tr><td><strong>Meal spacing</strong></td><td>3&ndash;5 hours apart</td></tr>
+                  <tr><td><strong>Pre-training meal</strong></td><td>60&ndash;90 min before</td></tr>
+                  <tr><td><strong>Carbs on rest day</strong></td><td>Reduce by ~80g</td></tr>
+                  <tr><td><strong>Before-bed protein</strong></td><td>Casein or cottage cheese</td></tr>
+                  <tr><td><strong>Weekly weigh-in</strong></td><td>Same time, same conditions</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- References -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>References</h2>
+          <p>Every recommendation on this page is supported by peer-reviewed research</p>
+        </div>
+        <ul class="ref-list">
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11405322/" target="_blank" rel="noopener">PMC (2024)</a> &mdash; Editorial: New insights and advances in body recomposition</li>
+          <li><a href="https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2024.1346637/full" target="_blank" rel="noopener">Frontiers in Sports &amp; Active Living (2024)</a> &mdash; High-protein diet in physically active middle-aged individuals: 8-week RCT</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5477153/" target="_blank" rel="noopener">ISSN Position Stand (2017)</a> &mdash; Protein and exercise</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5596471/" target="_blank" rel="noopener">ISSN Position Stand (2017)</a> &mdash; Nutrient timing</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4018950/" target="_blank" rel="noopener">Mamerow et al. (2014)</a> &mdash; Dietary protein distribution and 24-h muscle protein synthesis</li>
+          <li><a href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2021.685165/full" target="_blank" rel="noopener">Zaromskyte et al. (2021)</a> &mdash; Evaluating the leucine trigger hypothesis in young and older adults</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10400406/" target="_blank" rel="noopener">PMC (2023)</a> &mdash; Association of postprandial postexercise MPS rates with dietary leucine</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3577439/" target="_blank" rel="noopener">Schoenfeld et al. (2013)</a> &mdash; Nutrient timing revisited: Is there a post-exercise anabolic window?</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5828430/" target="_blank" rel="noopener">Schoenfeld &amp; Aragon (2018)</a> &mdash; How much protein can the body use in a single meal for muscle-building?</li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/17909410/" target="_blank" rel="noopener">Judelson et al. (2007)</a> &mdash; Effect of hydration state on strength, power, and resistance exercise performance</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11562224/" target="_blank" rel="noopener">PMC (2024)</a> &mdash; Nutritional supplements for healthy aging: A critical analysis review</li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6116139/" target="_blank" rel="noopener">PMC (2018)</a> &mdash; Protein, leucine, omega-3 fatty acids, and vitamin D in sarcopenia prevention</li>
+          <li><a href="https://www.sciencedirect.com/science/article/abs/pii/S8756328222001442" target="_blank" rel="noopener">Candow et al. (2022)</a> &mdash; Creatine supplementation for older adults: sarcopenia, osteoporosis, frailty</li>
+          <li><a href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2024.1388986/full" target="_blank" rel="noopener">Frontiers in Nutrition (2024)</a> &mdash; Impacts of protein quantity and distribution on body composition</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>RD's Workout &mdash; Science-Based Nutrition &mdash; <strong>March 2026</strong></p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Toggle training/rest day targets
+    function showTargets(type) {
+      document.querySelectorAll('.target-set').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.day-toggle button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(type + '-targets').classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
