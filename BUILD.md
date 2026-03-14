@@ -9,10 +9,11 @@
 
 ## What This Is
 
-A multi-program training site with two science-based workout programs:
+A multi-program training site with three science-based programs:
 
 1. **Kettlebell Program** (MWF) — 12 exercises optimized for order, set structure, and daily variation
 2. **Abdominal Routine** (Tue/Thu/Sat) — 8 exercises selected from EMG research across 3 rotating workouts
+3. **Nutrition Plan** (Daily) — Evidence-based body recomposition nutrition with personalized macros, hotel meal plan, and cafe options
 
 The site is phone-friendly with illustrated form guides using inline SVG stick-figure illustrations.
 
@@ -30,6 +31,7 @@ kettlebell-workout/
 ├── exercises.html          # KB Exercise Library — 12 exercises with SVG illustrations + form cues
 ├── progression.html        # KB 12-week progressive overload plan + superset option
 ├── abs.html                # Ab routine — 3 workouts, 8 exercises with SVG illustrations
+├── nutrition.html          # Nutrition plan — macros, meal plan, cafe options, supplements
 ├── css/
 │   └── style.css           # Full site styling (~840 lines)
 ├── js/
@@ -39,7 +41,8 @@ kettlebell-workout/
 │       └── deploy.yml      # GitHub Pages deployment workflow
 ├── .gitignore
 ├── BUILD.md                # This file
-└── kettlebell-workout-plan.md  # Source KB workout plan in markdown
+├── kettlebell-workout-plan.md  # Source KB workout plan in markdown
+└── nutrition-plan.md       # Source nutrition plan in markdown
 ```
 
 Also stored in `~/Documents/`:
@@ -60,9 +63,9 @@ Also stored in `~/Documents/`:
 
 ## Navigation Architecture
 
-### Main Nav (all pages): 3 tabs
+### Main Nav (all pages): 4 tabs
 ```
-Home | Kettlebell | Abs
+Home | Kettlebell | Abs | Nutrition
 ```
 - Fixed at top, navy background, 60px height
 - Logo: "RD's Workout" (orange accent on "Workout")
@@ -87,6 +90,7 @@ Overview | Monday | Wednesday | Friday | Exercises | Progression
 | exercises.html | Kettlebell | Yes | Exercises |
 | progression.html | Kettlebell | Yes | Progression |
 | abs.html | Abs | No | — |
+| nutrition.html | Nutrition | No | — |
 
 ---
 
@@ -110,6 +114,7 @@ Overview | Monday | Wednesday | Friday | Exercises | Progression
 |---------|--------------|-------------|
 | Kettlebell | `#1a3c6e → #2a5298` (navy) | `var(--navy)` |
 | Abs | `#0e7490 → #0891b2` (teal) | `#0891b2` |
+| Nutrition | `#065f46 → #059669` (green) | `#059669` |
 
 ### Day Color Scheme (KB)
 - **Monday:** Navy gradient (`#1a3c6e → #2a5298`)
@@ -319,6 +324,22 @@ All exercises use inline SVGs with consistent style:
 - Jay et al. (2011) — Kettlebell swing and low back pain, JSCR
 - PMC10910645 (2024) — Comprehensive kettlebell training review
 
+### Nutrition Plan
+- PMC (2024) — New insights and advances in body recomposition
+- Frontiers in Sports & Active Living (2024) — High-protein diet in middle-aged individuals, 8-week RCT
+- ISSN Position Stand (2017) — Protein and exercise
+- ISSN Position Stand (2017) — Nutrient timing
+- Mamerow et al. (2014) — Dietary protein distribution and 24-h MPS
+- Zaromskyte et al. (2021) — Leucine trigger hypothesis in young and older adults
+- PMC (2023) — Postprandial postexercise MPS rates and dietary leucine
+- Schoenfeld et al. (2013) — Nutrient timing revisited: post-exercise anabolic window
+- Schoenfeld & Aragon (2018) — How much protein per meal for muscle-building
+- Judelson et al. (2007) — Hydration state effects on strength and resistance exercise
+- PMC (2024) — Nutritional supplements for healthy aging
+- PMC (2018) — Protein, leucine, omega-3, vitamin D in sarcopenia prevention
+- Candow et al. (2022) — Creatine supplementation for older adults
+- Frontiers in Nutrition (2024) — Protein quantity and distribution impacts on body composition
+
 ### Abdominal Routine
 - ACE/San Diego State EMG Study (Peter Francis, 2001) — Best and worst abdominal exercises
 - Escamilla et al. (Physical Therapy, 2006) — EMG analysis of traditional and nontraditional ab exercises
@@ -363,6 +384,17 @@ All exercises use inline SVGs with consistent style:
 13. Simplified nav to 3 main tabs (Home | Kettlebell | Abs) with KB subnav for sub-pages
 14. Updated nav, logos, and footers across all 8 pages
 
+### Session 3 — March 14, 2026
+15. Added Nutrition tab — comprehensive body recomposition nutrition page
+16. Personalized macros: 2,500 kcal training / 2,250 rest, 140g protein (2.0 g/kg)
+17. Built weekly meal plan from hotel lunch & dinner Google Sheets menus (separate tabs)
+18. Excluded all Indian/curry dishes and vegan/tofu/tempeh options per preference
+19. Added cafe options section: smoothie rankings (Mixed Berries = best), meal replacements, combos
+20. Updated nav across all 9 pages (Home | Kettlebell | Abs | Nutrition)
+21. Updated home page: 3 programs, added Nutrition program card
+22. Created `nutrition-plan.md` as markdown reference (companion to `kettlebell-workout-plan.md`)
+23. 14 peer-reviewed references (ISSN, ACSM, PMC meta-analyses, Frontiers in Nutrition)
+
 ### Key Decisions
 - **Pure HTML/CSS/JS** — simple static site doesn't need React/Vue
 - **SVG illustrations over YouTube embeds** — more reliable, consistent look, no third-party issues
@@ -371,3 +403,8 @@ All exercises use inline SVGs with consistent style:
 - **HR-guided rest (KB)** — rest periods defined by heart rate targets rather than fixed timers
 - **3-day ab rotation** — each session targets different movement patterns for full coverage
 - **Teal color for abs** (`#0891b2`) — visually distinct from KB navy without clashing
+- **Green color for nutrition** (`#059669`) — distinct from both KB navy and abs teal
+- **Calorie cycling for recomposition** — maintenance on training days, ~10% deficit on rest days
+- **Hotel meal plan from Google Sheets** — Lunch tab (gid=1656742956) and Dinner tab (gid=1278865001) are separate menus
+- **Cafe smoothie: Mixed Berries** — 162 cal / 18.5g protein = best protein-to-calorie ratio of all smoothies
+- **Monday dinner = only gap day** — all dinner proteins are curry/Indian; lunch has Parsley Green Chili Chicken
