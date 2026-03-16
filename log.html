@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Workout | RD's Workout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .log-hero { background: linear-gradient(135deg, #1e3a5f 0%, #2d6a4f 100%); color: #fff; padding: 2rem 0 1.5rem; }
+    .log-hero h1 { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .log-hero p { opacity: 0.85; font-size: 0.95rem; }
+    .day-selector { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
+    .day-btn { padding: 0.5rem 1.2rem; border-radius: 99px; border: 2px solid rgba(255,255,255,0.5); background: transparent; color: #fff; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .day-btn.active { background: #fff; color: #1e3a5f; border-color: #fff; }
+    .day-btn:hover:not(.active) { background: rgba(255,255,255,0.15); }
+
+    .setup-banner { background: #fff3cd; border-left: 4px solid #f59e0b; padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem; }
+    .setup-banner h3 { margin: 0 0 0.4rem; font-size: 0.95rem; color: #92400e; }
+    .setup-banner p { margin: 0 0 0.6rem; font-size: 0.85rem; color: #78350f; }
+    .setup-url-row { display: flex; gap: 0.5rem; }
+    .setup-url-row input { flex: 1; padding: 0.5rem 0.8rem; border: 1px solid #d97706; border-radius: 6px; font-size: 0.85rem; font-family: inherit; }
+    .setup-url-row button { padding: 0.5rem 1rem; background: #d97706; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 0.85rem; }
+    .setup-configured { background: #d1fae5; border-left-color: #10b981; }
+    .setup-configured h3 { color: #065f46; }
+    .setup-configured p { color: #047857; }
+
+    .log-table-wrap { overflow-x: auto; border-radius: 10px; box-shadow: 0 1px 8px rgba(0,0,0,0.08); }
+    .log-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 0.9rem; }
+    .log-table th { background: #f8fafc; padding: 0.75rem 1rem; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; white-space: nowrap; }
+    .log-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+    .log-table tr:last-child td { border-bottom: none; }
+    .log-table tr:hover td { background: #f9fafb; }
+    .ex-num { color: #9ca3af; font-weight: 600; font-size: 0.8rem; }
+    .ex-name { font-weight: 600; color: #111827; }
+    .sets-reps { background: #eff6ff; color: #1d4ed8; padding: 0.25rem 0.6rem; border-radius: 99px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+    .weight-input { width: 72px; padding: 0.4rem 0.5rem; border: 1.5px solid #d1d5db; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-align: center; font-family: inherit; transition: border-color 0.2s; }
+    .weight-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .volume-cell { font-weight: 700; color: #059669; font-size: 0.9rem; min-width: 70px; }
+    .volume-cell.zero { color: #d1d5db; }
+
+    .totals-bar { background: #1e3a5f; color: #fff; border-radius: 10px; padding: 1.2rem 1.5rem; margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+    .totals-bar .total-item { flex: 1; min-width: 120px; }
+    .totals-bar .total-label { font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; }
+    .totals-bar .total-value { font-size: 1.4rem; font-weight: 800; }
+
+    .submit-row { margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn-log { padding: 0.85rem 2rem; background: #059669; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s; flex: 1; max-width: 280px; }
+    .btn-log:hover { background: #047857; }
+    .btn-log:disabled { background: #9ca3af; cursor: not-allowed; }
+    .btn-clear { padding: 0.85rem 1.5rem; background: transparent; color: #6b7280; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .btn-clear:hover { border-color: #9ca3af; color: #374151; }
+
+    /* Summary */
+    .summary-section { display: none; }
+    .summary-section.visible { display: block; }
+    .summary-header { background: linear-gradient(135deg, #059669, #047857); color: #fff; border-radius: 12px 12px 0 0; padding: 1.5rem; text-align: center; }
+    .summary-header h2 { margin: 0 0 0.3rem; font-size: 1.5rem; }
+    .summary-header p { margin: 0; opacity: 0.85; }
+    .summary-body { background: #fff; border-radius: 0 0 12px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 1.5rem; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .summary-stat { background: #f8fafc; border-radius: 8px; padding: 1rem; text-align: center; }
+    .summary-stat .stat-value { font-size: 1.6rem; font-weight: 800; color: #111827; }
+    .summary-stat .stat-label { font-size: 0.75rem; color: #6b7280; margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .summary-stat.highlight { background: #d1fae5; }
+    .summary-stat.highlight .stat-value { color: #059669; }
+    .summary-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin-bottom: 1rem; }
+    .summary-table th { background: #f3f4f6; padding: 0.6rem 0.75rem; text-align: left; font-weight: 700; color: #374151; }
+    .summary-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #f3f4f6; }
+    .summary-table tr:last-child td { border-bottom: none; font-weight: 700; background: #eff6ff; }
+    .top-exercise { background: #fef3c7; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.875rem; color: #92400e; margin-bottom: 1rem; }
+    .compare-row { font-size: 0.8rem; color: #6b7280; margin-top: 0.2rem; }
+    .compare-up { color: #059669; font-weight: 600; }
+    .compare-down { color: #ef4444; font-weight: 600; }
+    .summary-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+    .btn-new-session { padding: 0.75rem 1.5rem; background: #1e3a5f; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 0.9rem; }
+    .status-msg { margin-top: 0.75rem; padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: none; }
+    .status-msg.success { background: #d1fae5; color: #065f46; display: block; }
+    .status-msg.error { background: #fee2e2; color: #991b1b; display: block; }
+    .status-msg.sending { background: #dbeafe; color: #1e40af; display: block; }
+
+    @media (max-width: 600px) {
+      .log-table th:nth-child(5), .log-table td:nth-child(5) { display: none; }
+      .totals-bar .total-value { font-size: 1.2rem; }
+      .weight-input { width: 62px; }
+    }
+  </style>
+</head>
+<body class="has-subnav">
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">RD's <span>Workout</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="kettlebell.html" class="active">Kettlebell</a></li>
+        <li><a href="abs.html">Abs</a></li>
+        <li><a href="nutrition.html">Nutrition</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="subnav">
+    <div class="subnav-inner">
+      <a href="kettlebell.html">Overview</a>
+      <a href="monday.html">Monday</a>
+      <a href="wednesday.html">Wednesday</a>
+      <a href="friday.html">Friday</a>
+      <a href="exercises.html">Exercises</a>
+      <a href="log.html" class="active">Log Workout</a>
+    </div>
+  </div>
+
+  <main>
+    <section class="log-hero">
+      <div class="container">
+        <h1>Log Your Workout</h1>
+        <p id="today-label">Enter your kettlebell weights and track your progress</p>
+        <div class="day-selector">
+          <button class="day-btn" data-day="monday" onclick="setDay('monday')">Monday</button>
+          <button class="day-btn" data-day="wednesday" onclick="setDay('wednesday')">Wednesday</button>
+          <button class="day-btn" data-day="friday" onclick="setDay('friday')">Friday</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+
+        <!-- Google Sheets Setup Banner -->
+        <div id="setup-banner" class="setup-banner">
+          <h3>One-time setup: Connect to Google Sheets</h3>
+          <p>Paste your Google Apps Script URL below to save workouts to Google Sheets. <a href="#setup-instructions" style="color:#92400e;">How to get this URL</a></p>
+          <div class="setup-url-row">
+            <input type="url" id="script-url-input" placeholder="https://script.google.com/macros/s/...">
+            <button onclick="saveScriptUrl()">Save</button>
+          </div>
+        </div>
+        <div id="setup-configured" class="setup-banner setup-configured" style="display:none;">
+          <h3>Google Sheets connected</h3>
+          <p>Workouts will be saved automatically. <button onclick="resetScriptUrl()" style="background:none;border:none;color:#047857;font-weight:700;cursor:pointer;padding:0;font-size:0.85rem;">Change URL</button></p>
+        </div>
+
+        <!-- Log Form -->
+        <div id="log-form-section">
+          <div class="log-table-wrap">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Exercise</th>
+                  <th>Sets x Reps</th>
+                  <th>Weight (lbs)</th>
+                  <th>Volume (lbs)</th>
+                </tr>
+              </thead>
+              <tbody id="exercise-rows"></tbody>
+            </table>
+          </div>
+
+          <div class="totals-bar">
+            <div class="total-item">
+              <div class="total-label">Total Volume</div>
+              <div class="total-value" id="total-volume">0 lbs</div>
+            </div>
+            <div class="total-item">
+              <div class="total-label">Total Reps</div>
+              <div class="total-value" id="total-reps">1,200</div>
+            </div>
+            <div class="total-item">
+              <div class="total-label">Exercises Logged</div>
+              <div class="total-value" id="exercises-logged">0 / 12</div>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <button class="btn-log" id="submit-btn" onclick="submitWorkout()">Save Workout &amp; See Report</button>
+            <button class="btn-clear" onclick="clearForm()">Clear</button>
+          </div>
+          <div id="status-msg" class="status-msg"></div>
+        </div>
+
+        <!-- Post-Workout Summary -->
+        <div id="summary-section" class="summary-section" style="margin-top:2rem;">
+          <div class="summary-header">
+            <h2>Workout Complete!</h2>
+            <p id="summary-subtitle"></p>
+          </div>
+          <div class="summary-body">
+            <div class="summary-grid" id="summary-stats"></div>
+            <div id="top-exercise-box" class="top-exercise"></div>
+            <div class="log-table-wrap">
+              <table class="summary-table" id="summary-table">
+                <thead>
+                  <tr>
+                    <th>Exercise</th>
+                    <th>Sets x Reps</th>
+                    <th>Weight (lbs)</th>
+                    <th>Volume (lbs)</th>
+                  </tr>
+                </thead>
+                <tbody id="summary-rows"></tbody>
+              </table>
+            </div>
+            <div class="summary-actions">
+              <button class="btn-new-session" onclick="newSession()">Log Another Session</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Setup Instructions -->
+        <div id="setup-instructions" style="margin-top:3rem; padding-top:2rem; border-top:1px solid #e5e7eb;">
+          <h2 style="font-size:1.2rem; margin-bottom:1rem;">How to Connect Google Sheets (One-Time Setup)</h2>
+          <ol style="line-height:2; color:#374151; font-size:0.9rem; padding-left:1.2rem;">
+            <li>Go to <strong>sheets.google.com</strong> and create a new spreadsheet. Name it <strong>Kettlebell Log</strong>.</li>
+            <li>Click <strong>Extensions &rarr; Apps Script</strong></li>
+            <li>Delete any existing code and paste the code below, then click <strong>Save</strong></li>
+            <li>Click <strong>Deploy &rarr; New deployment</strong></li>
+            <li>Select type: <strong>Web app</strong></li>
+            <li>Set <em>Execute as</em>: <strong>Me</strong> &nbsp;|&nbsp; <em>Who has access</em>: <strong>Anyone</strong></li>
+            <li>Click <strong>Deploy</strong>, authorize when prompted, then copy the Web App URL</li>
+            <li>Paste that URL in the setup box above and click Save</li>
+          </ol>
+          <div style="background:#1e293b; color:#e2e8f0; border-radius:8px; padding:1.2rem; font-family:monospace; font-size:0.8rem; overflow-x:auto; margin-top:1rem; line-height:1.6;">
+<pre style="margin:0; white-space:pre-wrap;">function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+
+    // Add header row on first use
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['Date','Day Type','Exercise','Sets','Reps Per Set',
+                       'Weight (lbs)','Volume (lbs)','Total Session Volume']);
+    }
+
+    var sessionVol = data.totalVolume;
+    data.exercises.forEach(function(ex, i) {
+      sheet.appendRow([
+        data.date, data.dayType, ex.name,
+        ex.sets, ex.repsPerSet, ex.weight, ex.volume,
+        i === 0 ? sessionVol : ''
+      ]);
+    });
+
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'success'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error', message:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>RD's Workout &mdash; Science-Based Training &mdash; <strong>March 2026</strong></p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // ─── Data ───────────────────────────────────────────────────────────────
+    const EXERCISES = [
+      'Kettlebell Swings','High Pulls','Side (Golf) Swings','Rows',
+      'Push Outs','Overhead Press','Low Chest Flys','Bicep Curls + Press',
+      'Tricep Extensions','Side Extensions','Waist Halos','Head Halos'
+    ];
+
+    const DAY_SETS = {
+      monday:    [[10,10],[10,10],[5,20],[5,20],[5,20],[5,20],[4,25],[4,25],[4,25],[4,25],[4,25],[4,25]],
+      wednesday: [[5,20],[5,20],[4,25],[4,25],[4,25],[4,25],[4,25],[4,25],[4,25],[4,25],[2,50],[2,50]],
+      friday:    [[10,10],[10,10],[10,10],[5,20],[5,20],[5,20],[5,20],[5,20],[5,20],[5,20],[4,25],[4,25]]
+    };
+
+    let currentDay = 'monday';
+
+    // ─── Init ────────────────────────────────────────────────────────────────
+    function init() {
+      // Auto-detect today
+      const dow = new Date().getDay(); // 0=Sun,1=Mon,...6=Sat
+      if (dow === 3) currentDay = 'wednesday';
+      else if (dow === 5) currentDay = 'friday';
+      else currentDay = 'monday';
+
+      renderDayButtons();
+      renderExercises();
+      checkSetupBanner();
+
+      const label = document.getElementById('today-label');
+      const today = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+      label.textContent = today;
+    }
+
+    function renderDayButtons() {
+      document.querySelectorAll('.day-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.day === currentDay);
+      });
+    }
+
+    function setDay(day) {
+      currentDay = day;
+      renderDayButtons();
+      renderExercises();
+      updateTotals();
+    }
+
+    function renderExercises() {
+      const tbody = document.getElementById('exercise-rows');
+      const sets = DAY_SETS[currentDay];
+      const saved = getSavedWeights();
+
+      tbody.innerHTML = EXERCISES.map((name, i) => {
+        const [s, r] = sets[i];
+        const savedVal = saved[i] !== undefined ? saved[i] : '';
+        const vol = savedVal ? (s * r * savedVal) : 0;
+        return `
+          <tr>
+            <td class="ex-num">${i+1}</td>
+            <td class="ex-name">${name}</td>
+            <td><span class="sets-reps">${s} x ${r}</span></td>
+            <td><input type="number" class="weight-input" id="w${i}" min="0" max="999" step="0.5"
+                 value="${savedVal}" placeholder="lbs"
+                 oninput="updateTotals(); saveWeights()"></td>
+            <td class="volume-cell ${vol===0?'zero':''}" id="vol${i}">${vol===0?'—':vol.toLocaleString()+' lbs'}</td>
+          </tr>`;
+      }).join('');
+
+      updateTotals();
+    }
+
+    function updateTotals() {
+      const sets = DAY_SETS[currentDay];
+      let totalVol = 0, logged = 0, totalReps = 0;
+
+      EXERCISES.forEach((_, i) => {
+        const inp = document.getElementById('w'+i);
+        const volCell = document.getElementById('vol'+i);
+        if (!inp || !volCell) return;
+        const w = parseFloat(inp.value) || 0;
+        const [s, r] = sets[i];
+        const vol = s * r * w;
+        totalReps += s * r;
+        if (w > 0) {
+          totalVol += vol;
+          logged++;
+          volCell.textContent = vol.toLocaleString() + ' lbs';
+          volCell.className = 'volume-cell';
+        } else {
+          volCell.textContent = '—';
+          volCell.className = 'volume-cell zero';
+        }
+      });
+
+      document.getElementById('total-volume').textContent = totalVol.toLocaleString() + ' lbs';
+      document.getElementById('total-reps').textContent = totalReps.toLocaleString();
+      document.getElementById('exercises-logged').textContent = logged + ' / 12';
+    }
+
+    // ─── Submit ──────────────────────────────────────────────────────────────
+    function submitWorkout() {
+      const sets = DAY_SETS[currentDay];
+      const exercises = [];
+      let totalVolume = 0;
+
+      EXERCISES.forEach((name, i) => {
+        const inp = document.getElementById('w'+i);
+        const w = parseFloat(inp.value) || 0;
+        const [s, r] = sets[i];
+        const vol = s * r * w;
+        totalVolume += vol;
+        exercises.push({ name, sets: s, repsPerSet: r, weight: w, volume: vol });
+      });
+
+      const payload = {
+        date: new Date().toLocaleDateString('en-US'),
+        dayType: currentDay.charAt(0).toUpperCase() + currentDay.slice(1),
+        exercises,
+        totalVolume
+      };
+
+      // Save to localStorage for comparison next time
+      localStorage.setItem('lastSession_' + currentDay, JSON.stringify(payload));
+
+      // Show summary
+      showSummary(payload);
+
+      // Send to Google Sheets
+      const url = localStorage.getItem('sheetsScriptUrl');
+      if (url) {
+        const msg = document.getElementById('status-msg');
+        msg.textContent = 'Saving to Google Sheets...';
+        msg.className = 'status-msg sending';
+        fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(() => {
+          msg.textContent = 'Saved to Google Sheets!';
+          msg.className = 'status-msg success';
+        }).catch(() => {
+          msg.textContent = 'Could not reach Google Sheets. Data saved locally.';
+          msg.className = 'status-msg error';
+        });
+      }
+    }
+
+    // ─── Summary ─────────────────────────────────────────────────────────────
+    function showSummary(payload) {
+      document.getElementById('log-form-section').style.display = 'none';
+      const section = document.getElementById('summary-section');
+      section.classList.add('visible');
+
+      document.getElementById('summary-subtitle').textContent =
+        payload.dayType + ' Day — ' + payload.date;
+
+      // Top stats
+      const nonZero = payload.exercises.filter(e => e.weight > 0);
+      const avgWeight = nonZero.length ? Math.round(nonZero.reduce((a,e) => a + e.weight, 0) / nonZero.length) : 0;
+      const topEx = [...payload.exercises].sort((a,b) => b.volume - a.volume)[0];
+      const totalReps = payload.exercises.reduce((a,e) => a + e.sets * e.repsPerSet, 0);
+
+      // Compare to last session
+      const last = JSON.parse(localStorage.getItem('lastSession_' + currentDay + '_prev') || 'null');
+      let vsLast = '';
+      if (last) {
+        const diff = payload.totalVolume - last.totalVolume;
+        const pct = Math.round(Math.abs(diff) / last.totalVolume * 100);
+        vsLast = diff >= 0
+          ? `<span class="compare-up">+${diff.toLocaleString()} lbs (+${pct}%) vs last ${currentDay}</span>`
+          : `<span class="compare-down">-${Math.abs(diff).toLocaleString()} lbs (-${pct}%) vs last ${currentDay}</span>`;
+      }
+
+      document.getElementById('summary-stats').innerHTML = `
+        <div class="summary-stat highlight">
+          <div class="stat-value">${payload.totalVolume.toLocaleString()}</div>
+          <div class="stat-label">Total Volume (lbs)</div>
+          ${vsLast ? '<div class="compare-row">'+vsLast+'</div>' : ''}
+        </div>
+        <div class="summary-stat">
+          <div class="stat-value">${totalReps.toLocaleString()}</div>
+          <div class="stat-label">Total Reps</div>
+        </div>
+        <div class="summary-stat">
+          <div class="stat-value">${nonZero.length}</div>
+          <div class="stat-label">Exercises Logged</div>
+        </div>
+        <div class="summary-stat">
+          <div class="stat-value">${avgWeight}</div>
+          <div class="stat-label">Avg Weight (lbs)</div>
+        </div>
+      `;
+
+      if (topEx && topEx.volume > 0) {
+        document.getElementById('top-exercise-box').innerHTML =
+          `Highest Volume Exercise: <strong>${topEx.name}</strong> — ${topEx.volume.toLocaleString()} lbs (${topEx.sets} x ${topEx.repsPerSet} @ ${topEx.weight} lbs)`;
+      }
+
+      // Exercise breakdown table
+      const tbody = document.getElementById('summary-rows');
+      let grandVol = 0;
+      tbody.innerHTML = payload.exercises.map(ex => {
+        grandVol += ex.volume;
+        return `<tr>
+          <td>${ex.name}</td>
+          <td>${ex.sets} x ${ex.repsPerSet}</td>
+          <td>${ex.weight > 0 ? ex.weight + ' lbs' : '—'}</td>
+          <td>${ex.volume > 0 ? ex.volume.toLocaleString() + ' lbs' : '—'}</td>
+        </tr>`;
+      }).join('') + `<tr>
+          <td colspan="3"><strong>Total</strong></td>
+          <td><strong>${grandVol.toLocaleString()} lbs</strong></td>
+        </tr>`;
+
+      section.scrollIntoView({ behavior: 'smooth' });
+
+      // Save current as "prev" for next time comparison
+      localStorage.setItem('lastSession_' + currentDay + '_prev', JSON.stringify(payload));
+    }
+
+    function newSession() {
+      document.getElementById('log-form-section').style.display = 'block';
+      document.getElementById('summary-section').classList.remove('visible');
+      clearForm();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ─── Persistence ─────────────────────────────────────────────────────────
+    function saveWeights() {
+      const vals = EXERCISES.map((_, i) => {
+        const inp = document.getElementById('w'+i);
+        return inp ? (parseFloat(inp.value) || '') : '';
+      });
+      localStorage.setItem('draft_' + currentDay, JSON.stringify(vals));
+    }
+
+    function getSavedWeights() {
+      try {
+        return JSON.parse(localStorage.getItem('draft_' + currentDay) || '[]');
+      } catch { return []; }
+    }
+
+    function clearForm() {
+      localStorage.removeItem('draft_' + currentDay);
+      renderExercises();
+      const msg = document.getElementById('status-msg');
+      if (msg) { msg.className = 'status-msg'; msg.textContent = ''; }
+    }
+
+    // ─── Setup Banner ────────────────────────────────────────────────────────
+    function checkSetupBanner() {
+      const url = localStorage.getItem('sheetsScriptUrl');
+      document.getElementById('setup-banner').style.display = url ? 'none' : 'block';
+      document.getElementById('setup-configured').style.display = url ? 'block' : 'none';
+    }
+
+    function saveScriptUrl() {
+      const val = document.getElementById('script-url-input').value.trim();
+      if (!val.startsWith('https://script.google.com')) {
+        alert('Please enter a valid Google Apps Script URL.');
+        return;
+      }
+      localStorage.setItem('sheetsScriptUrl', val);
+      checkSetupBanner();
+    }
+
+    function resetScriptUrl() {
+      localStorage.removeItem('sheetsScriptUrl');
+      checkSetupBanner();
+    }
+
+    // ─── Run ─────────────────────────────────────────────────────────────────
+    init();
+  </script>
+</body>
+</html>
