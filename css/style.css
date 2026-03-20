@@ -202,7 +202,7 @@ main { padding-top: 60px; }
 
 .day-hero.monday { background: linear-gradient(135deg, #14213D 0%, #1e3054 100%); color: white; }
 .day-hero.wednesday { background: linear-gradient(135deg, #9e0b1c 0%, #CE1126 100%); color: white; }
-.day-hero.friday { background: linear-gradient(135deg, #065f46 0%, #059669 100%); color: white; }
+.day-hero.friday { background: linear-gradient(135deg, #14213D 0%, #1e3054 100%); color: white; }
 .day-hero.strength { background: linear-gradient(135deg, #14213D 0%, #1e3054 100%); color: white; }
 .day-hero.hypertrophy { background: linear-gradient(135deg, #9e0b1c 0%, #CE1126 100%); color: white; }
 .day-hero.metabolic { background: linear-gradient(135deg, #004d73 0%, #006BA6 100%); color: white; }
@@ -306,7 +306,7 @@ main { padding-top: 60px; }
 
 .day-card.monday-card { border-top-color: var(--navy); }
 .day-card.wednesday-card { border-top-color: var(--accent); }
-.day-card.friday-card { border-top-color: #059669; }
+.day-card.friday-card { border-top-color: #006BA6; }
 .day-card.strength-card { border-top-color: var(--navy); }
 .day-card.hypertrophy-card { border-top-color: var(--accent); }
 .day-card.metabolic-card { border-top-color: var(--powder-blue); }
